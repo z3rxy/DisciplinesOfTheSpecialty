@@ -8,7 +8,9 @@ def solve_system(C, b=None):
         raise ValueError("Матрица C вырождена (необратима).")
 
     if b is None:
+        print("Вектор b:")
         b = generate_random_vector(mean=2, std_dev=1, size=C.shape[1])
+        print(b)
 
     if b.shape[0] != C.shape[0]:
         raise ValueError("Вектор b должен иметь такое же количество строк, как матрица C.")
@@ -26,17 +28,15 @@ while True:
     else:
         print("Неверный выбор. Пожалуйста, введите '1' или '2'.")
 
+C_str = input("Введите матрицу C (каждая строка разделяется точкой с запятой, значения в строках разделяются пробелами):\n")
+C = np.array([list(map(float, row.split())) for row in C_str.split(';')])
 
 if user_choice == '1':
-    C_str = input("Введите матрицу C (каждая строка разделяется точкой с запятой, значения в строках разделяются пробелами):\n")
-    C = np.array([list(map(float, row.split())) for row in C_str.split(';')])
     b_str = input("Введите вектор b (значения разделяются запятыми): ")
     b = np.array([float(val) for val in b_str.split(',')])
     solution, cubic_norm = solve_system(C, b)
     print("Вектор b:\n", b)
 elif user_choice == '2':
-    C_str = input("Введите матрицу C (каждая строка разделяется точкой с запятой, значения в строках разделяются пробелами):\n")
-    C = np.array([list(map(float, row.split())) for row in C_str.split(';')])
     solution, cubic_norm = solve_system(C)
 
 print("Матрица:\n", C)
