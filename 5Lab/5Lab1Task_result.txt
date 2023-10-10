@@ -1,14 +1,16 @@
 Eigenvalues of matrix A:
-[  6.  	403.43]
+[  5.5 +3.43j	  5.5 -3.43j	403.64+0.j  	148.2 +0.j  ]
 
 Eigenvectors of matrix A:
-[[1.	0.]
- [0.	1.]]
+[[ 0.07+0.49j	 0.07-0.49j	 0.  +0.j  	-0.  +0.j  ]
+ [ 0.87+0.j  	 0.87-0.j  	 0.  +0.j  	 0.01+0.j  ]
+ [ 0.  +0.j  	 0.  -0.j  	 0.53+0.j  	-0.  +0.j  ]
+ [ 0.  +0.j  	 0.  -0.j  	 0.85+0.j  	 1.  +0.j  ]]
 
 Smallest eigenvalue in magnitude:
-6.00
+5.50+3.43j
 
 Corresponding eigenvector:
-[1.	0.]
+[0.07+0.49j	0.87+0.j  	0.  +0.j  	0.  +0.j  ]
 
 The equation Ax = lambda * x holds for the smallest eigenvalue and its eigenvector.
