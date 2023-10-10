@@ -1,0 +1,14 @@
+Eigenvalues of matrix A:
+[  6.  	403.43]
+
+Eigenvectors of matrix A:
+[[1.	0.]
+ [0.	1.]]
+
+Smallest eigenvalue in magnitude:
+6.00
+
+Corresponding eigenvector:
+[1.	0.]
+
+The equation Ax = lambda * x holds for the smallest eigenvalue and its eigenvector.
