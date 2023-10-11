@@ -1,43 +1,41 @@
 import numpy as np
-import scipy.integrate as spi
-import matplotlib.pyplot as plt
 from scipy.special import genlaguerre
+from scipy.integrate import quad
+import matplotlib.pyplot as plt
 
+# Определение функции f(x) = x^7
 def f(x):
     return x**7
 
-def laguerre_polynomials(n):
-    return lambda x: genlaguerre(n, 0)(x)
-
-def scalar_product(f, g):
-    integrand = lambda x: f(x) * g(x)
-    return spi.quad(integrand, 0, 1)[0]
-
-degree = 6  
+# Вычисление коэффициентов разложения a_j
 coefficients = []
+for j in range(7):
+    integrand = lambda x: f(x) * genlaguerre(j, 0)(x)
+    integral, _ = quad(integrand, 0, 1)
+    coefficients.append(integral)
 
-for n in range(degree + 1):
-    laguerre_n = laguerre_polynomials(n)
-    coefficient = scalar_product(f, laguerre_n) / scalar_product(laguerre_n, laguerre_n)
-    coefficients.append(coefficient)
+# Создание приближения суммой полиномов Лагера
+def approximation(x):
+    result = 0
+    for j in range(7):
+        result += coefficients[j] * genlaguerre(j, 0)(x)
+    return result
 
-x_values = np.linspace(0, 1, 1000)
-approximation = np.zeros_like(x_values)
-
-for n, coefficient in enumerate(coefficients):
-    laguerre_n = laguerre_polynomials(n)
-    approximation += coefficient * laguerre_n(x_values)
+# Создание графиков
+x = np.linspace(0, 1, 1000)
+y = f(x)
+y_approximation = approximation(x)
 
 plt.figure(figsize=(10, 6))
-plt.plot(x_values, f(x_values), label='$x^7$', linestyle='--', linewidth=2)
-plt.plot(x_values, approximation, label='Approximation', linewidth=2)
+plt.plot(x, y, label='f(x) = x^7', color='blue')
+plt.plot(x, y_approximation, label='Approximation', color='red')
+plt.legend()
 plt.xlabel('x')
 plt.ylabel('y')
-plt.title('Best Least Squares Approximation')
-plt.legend()
-plt.grid(True)
+plt.title('Function and Best Approximation')
+plt.grid()
 plt.show()
 
-print("Coefficients of the Laguerre series:")
-for n, coefficient in enumerate(coefficients):
-    print(f"Coefficient a_{n} = {coefficient:.6f}")
+# Вывод коэффициентов разложения
+for j, aj in enumerate(coefficients):
+    print(f'a_{j} = {aj}')
