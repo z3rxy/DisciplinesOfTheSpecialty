@@ -1,22 +1,23 @@
 import numpy as np
-
-def generate_random_vector(mean, std_dev, size):
-    return np.random.normal(mean, std_dev, size)
+from scipy.stats import uniform
 
 def solve_system(C, b=None):
+    if C.shape[0] != C.shape[1]:
+        raise ValueError("Матрица C должна быть квадратной.")
+    
     if np.linalg.det(C) == 0:
         raise ValueError("Матрица C вырождена (необратима).")
 
     if b is None:
         print("Вектор b:")
-        b = generate_random_vector(mean=2, std_dev=1, size=C.shape[1])
+        b = uniform.rvs(loc=0, scale=2, size=C.shape[1])
         print(b)
 
     if b.shape[0] != C.shape[0]:
         raise ValueError("Вектор b должен иметь такое же количество строк, как матрица C.")
 
     x = np.linalg.solve(C, b)
-    norm = np.linalg.norm(x, ord=3)
+    norm = np.linalg.norm(x, ord=1)
 
     return x, norm
 
@@ -34,11 +35,11 @@ C = np.array([list(map(float, row.split())) for row in C_str.split(';')])
 if user_choice == '1':
     b_str = input("Введите вектор b (значения разделяются запятыми): ")
     b = np.array([float(val) for val in b_str.split(',')])
-    solution, cubic_norm = solve_system(C, b)
+    solution, octahedral_norm = solve_system(C, b)
     print("Вектор b:\n", b)
 elif user_choice == '2':
-    solution, cubic_norm = solve_system(C)
+    solution, octahedral_norm = solve_system(C)
 
 print("Матрица:\n", C)
 print("Решение:", solution)
-print("Кубическая норма:", cubic_norm)
+print("Октаедрическая норма:", octahedral_norm)
