@@ -1,57 +1,55 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Параметры задачи
-L = 200  # Пространственная область [0, L]
-T = 200  # Временная область [0, T]
-N = 200  # Количество пространственных узлов
-M = 100  # Количество временных шагов
-c = 1.0  # Скорость света
-wavelength = 0.1  # Длина волны
+N = 200
+M = 1000
+T = 1
 
-# Шаги по времени и пространству
-dt = T / M
-dz = L / N
-c1 = 1
-c2 = 1
+E = np.zeros((M, N))
+H = np.zeros((M, N))
+h = 200 / N
+tau = T / M
 
-# Инициализация сетки
-E = np.zeros((N, M))
-H = np.zeros((N, M))
+z = np.linspace(0, 200, N)
 
-# Инициализация начальных условий
-for i in range(N):
-    x = i * dz
-    E[i, 0] = 0.1 * np.sin(2 * np.pi * x / wavelength)
-    H[i, 0] = 0.1 * np.sin(2 * np.pi * x / wavelength)
+E[0, :] = 0.1 * np.sin(2 * np.pi * z / 100)
+H[0, :] = 0.1 * np.sin(2 * np.pi * z / 100)
 
-# Вычисление полей E и H в каждый момент времени
-for j in range(1, M):
-    for i in range(1, N):
-        E[i, j] = E[i, j - 1] + (c1 * dt / dz) * (H[i, j - 1] - H[i - 1, j - 1])
-
+for j in range(M - 1):
     for i in range(N - 1):
-        H[i, j] = H[i, j - 1] + (c2 * dt / dz) * (E[i + 1, j] - E[i, j])
+        dE = -tau / h * (H[j, i + 1] - H[j, i])
+        dH = -tau / h * (E[j, i] - E[j, i - 1])
 
-# Построение графиков
-t_values = np.linspace(0, T, M)
-z_values = np.linspace(0, L, N)
-T, Z = np.meshgrid(t_values, z_values)
+        if j > 0:
+            if E[j, i] < 0:
+                E[j, i] = 0
+            if H[j, i] < 0:
+                H[j, i] = 0
 
-plt.figure(figsize=(12, 6))
+        if dE < 0:
+            E[j + 1, i] = 0
+        else:
+            E[j + 1, i] = E[j, i] + dE
+
+        if dH < 0:
+            H[j + 1, i] = 0
+        else:
+            H[j + 1, i] = H[j, i] + dH
+
+        if j > 0:
+            if E[j, i] < 0:
+                E[j, i] = 0
+            if H[j, i] < 0:
+                H[j, i] = 0
+
 plt.subplot(121)
-plt.pcolormesh(T, Z, E, cmap='coolwarm')
-plt.title('Field E')
-plt.xlabel('Time')
-plt.ylabel('Space')
-plt.colorbar()
+plt.plot(z, E[0, :])
+plt.plot(z, E[-1, :], color='orange')
+plt.title('E')
 
 plt.subplot(122)
-plt.pcolormesh(T, Z, H, cmap='coolwarm')
-plt.title('Field H')
-plt.xlabel('Time')
-plt.ylabel('Space')
-plt.colorbar()
+plt.plot(z, H[0, :])
+plt.plot(z, H[-1, :], color='orange')
+plt.title('H')
 
-plt.tight_layout()
 plt.show()
