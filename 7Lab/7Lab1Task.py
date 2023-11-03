@@ -16,31 +16,16 @@ E[0, :] = 0.1 * np.sin(2 * np.pi * z / 100)
 H[0, :] = 0.1 * np.sin(2 * np.pi * z / 100)
 
 for j in range(M - 1):
-    for i in range(N - 1):
-        dE = -tau / h * (H[j, i + 1] - H[j, i])
-        dH = -tau / h * (E[j, i] - E[j, i - 1])
+    for i in range(1, N): 
+        dE = -tau / h * (H[j, i] - H[j, i - 1])
+        dH = -tau / h * (E[j, i - 1] - E[j, i])
 
-        if j > 0:
-            if E[j, i] < 0:
-                E[j, i] = 0
-            if H[j, i] < 0:
-                H[j, i] = 0
+        E[j + 1, i] = E[j, i] - dE
+        H[j + 1, i] = H[j, i] - dH
 
-        if dE < 0:
-            E[j + 1, i] = 0
-        else:
-            E[j + 1, i] = E[j, i] + dE
+        #E[j + 1, E[j + 1, :] < 0] = 0
+        #H[j + 1, H[j + 1, :] < 0] = 0
 
-        if dH < 0:
-            H[j + 1, i] = 0
-        else:
-            H[j + 1, i] = H[j, i] + dH
-
-        if j > 0:
-            if E[j, i] < 0:
-                E[j, i] = 0
-            if H[j, i] < 0:
-                H[j, i] = 0
 
 plt.subplot(121)
 plt.plot(z, E[0, :])
