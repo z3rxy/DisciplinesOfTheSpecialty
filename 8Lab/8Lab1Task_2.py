@@ -30,17 +30,9 @@ for j in range(M - 1):
         dE = -tau / h * (H[j, i] - H[j, i - 1])
         dH = -tau / h * (E[j, i - 1] - E[j, i])
 
+        # Модифицированные выражения для E и H
         E[j + 1, i] = E[j, i] - dE
         H[j + 1, i] = H[j, i] - dH
-
-# Модификация формулы для H_i^(1/2)
-for j in range(1, M):
-    for i in range(N):
-        H_sqrt = np.sqrt(H[j, i])
-        H_sqrt_minus_H_0 = H_sqrt - np.sqrt(H[j - 1, i])
-        E_diff = (E[j, (i + 1) % N] - E[j, i]) / h
-
-        H[j, i] = (H_sqrt_minus_H_0 / (tau / 2) - (tau / 4) * nu * E_diff) ** 2
 
 # Аналитическое решение
 def exact_solution(z, t, mu, nu):
@@ -57,8 +49,8 @@ plt.title('E')
 plt.legend()
 
 plt.subplot(122)
-plt.plot(z, H[0, :] ** 0.5)
-plt.plot(z, H[-1, :] ** 0.5, color='orange', label='Numerical')
-plt.title('sqrt(H)')
+plt.plot(z, H[0, :])
+plt.plot(z, H[-1, :], color='orange', label='Numerical')
+plt.title('H')
 
 plt.show()
