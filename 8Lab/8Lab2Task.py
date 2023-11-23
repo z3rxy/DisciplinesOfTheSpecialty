@@ -17,16 +17,48 @@ H[0, :] = 0.1 * np.sin(2 * np.pi * z / 100)
 
 for j in range(M-1):
     for i in range(N-1):
-        # Изменения в вычислении E и H
         E[j + 1, i] = E[j, i] - tau/h * (H[j, i + 1] - H[j, i])
         H[j + 1, i] = H[j, i] - tau/h * (E[j, i + 1] - E[j, i])
-
-    # Граничное условие для последнего столбца
     E[j + 1, N - 1] = E[j + 1, 0]
     H[j + 1, N - 1] = H[j, N-1] - tau/(2*h) * (E[j+1, 0] - E[j+1, N-2]) - (tau/4) * (E[j+1, N-1] - 2 * E[j+1, N-2] + E[j+1, N-3]) / h**2
 
-# Остальной код остается неизменным
+plt.subplot(221)
+plt.plot(z, E[0, :])
+plt.plot(z, E[M//2, :])
+plt.plot(z, E[-1, :])
+plt.title('E')
 
-# ... (ваш код построения графиков)
+plt.subplot(222)
+plt.plot(z, H[0, :])
+plt.plot(z, H[M//2, :])
+plt.plot(z, H[-1, :])
+plt.title('H')
+
+def exact_solution(z, t):
+    return 0.1 * np.sin(2 * np.pi * z * (z - t) / 100)
+
+error_E = np.zeros((M, N))
+error_H = np.zeros((M, N))
+
+for j in range(M):
+    for i in range(N):
+        error_E[j, i] = np.abs(E[j, i] - exact_solution(z[i], j * tau))
+        error_H[j, i] = np.abs(H[j, i] - exact_solution(z[i], j * tau))
+
+plt.subplot(223)
+for j in range(M):
+    plt.plot(z, error_E[j, :], label=f'Time = {j * tau:.2f}')
+plt.xlabel('z')
+plt.ylabel('Error')
+plt.legend()
+plt.title('Error in E')
+
+plt.subplot(224)
+for j in range(M):
+    plt.plot(z, error_H[j, :], label=f'Time = {j * tau:.2f}')
+plt.xlabel('z')
+plt.ylabel('Error')
+plt.legend()
+plt.title('Error in H')
 
 plt.show()
