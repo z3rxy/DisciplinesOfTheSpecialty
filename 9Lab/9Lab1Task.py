@@ -1,3 +1,4 @@
+import numpy as np
 class FractionalLinearTransformation:
     def __init__(self, a, b, c, d):
         self.a = a
@@ -45,7 +46,7 @@ print(transformation)
 
 # Преобразование окружности
 circle_center = complex(2, 3)
-circle_radius = 5
+circle_radius = np.inf
 transformed_circle = transformation.transform_circle(circle_center, circle_radius)
 print(f"\nTransformed Circle: Center - {transformed_circle[0]}, Radius - {transformed_circle[1]}")
 
